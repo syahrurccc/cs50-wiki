@@ -1,8 +1,9 @@
+import re
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.urls import reverse
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from markdown2 import Markdown
 from pathlib import Path
-
 from . import util
 
 markdowner = Markdown()
@@ -23,3 +24,23 @@ def entry_page(request, title):
             })
 
     return HttpResponse("404 Page not Found")
+
+def search(request: HttpRequest):
+    query = request.GET.get("q")
+
+    if not query:
+        return HttpResponseRedirect("/")
+    
+    for entry in util.list_entries():
+        if query.lower() == entry.lower():
+            return HttpResponseRedirect(reverse("entry_page", args=[entry]))
+
+    pattern = re.compile(f".*{re.escape(query)}.*", re.IGNORECASE)
+    results = [entry for entry in util.list_entries() if pattern.match(entry)]
+
+    return render(request, "encyclopedia/search.html", {
+        "results": results
+    })
+    
+    
+    
