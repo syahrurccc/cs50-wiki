@@ -43,7 +43,31 @@ def search(request: HttpRequest):
         "results": results
     })
 
-def random_page(request):
+def new_page(request: HttpRequest):
+    if request.method == "GET":
+        return render(request, "encyclopedia/new.html")
+    elif request.method == "POST":
+        title = request.POST.get("title")
+        desc = request.POST.get("description")
+
+        if not title or not desc:
+            return HttpResponseRedirect("/")
+        
+        for entry in util.list_entries():
+            if title.lower() == entry.lower():
+                return render(request, "encyclopedia/new.html", {
+                    "error": "Entry already exists"
+                })
+        
+        title_path = Path(f"entries/{title}.md")
+
+        with title_path.open("w") as f:
+            f.write("#" + title + "\n" + desc)
+
+        return HttpResponseRedirect(reverse("entry_page", args=[title]))
+    
+
+def random_page():
     choice = random.choice(util.list_entries())
 
     return HttpResponseRedirect(reverse("entry_page", args=[choice]))

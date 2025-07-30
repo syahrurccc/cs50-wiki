@@ -1,0 +1,2 @@
+#FastAPI
+FastAPI is a modern, high-performance web framework for building APIs with Python 3.8+ based on standard Python type hints. It is designed to be fast to code, fast to run, and easy to use, making it a popular choice for developing web services and microservices. 
