@@ -1,4 +1,5 @@
 import re
+import random
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
@@ -41,6 +42,11 @@ def search(request: HttpRequest):
     return render(request, "encyclopedia/search.html", {
         "results": results
     })
+
+def random_page(request):
+    choice = random.choice(util.list_entries())
+
+    return HttpResponseRedirect(reverse("entry_page", args=[choice]))
     
     
     
