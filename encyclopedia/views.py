@@ -12,7 +12,7 @@ def index(request):
         "entries": util.list_entries()
     })
 
-def entry(request, title):
+def entry_page(request, title):
     for entry in util.list_entries():
         if title.lower() == entry.lower():
             p = Path(f"entries/{entry}.md")
