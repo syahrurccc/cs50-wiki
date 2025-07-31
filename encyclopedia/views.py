@@ -2,7 +2,7 @@ import re
 import random
 from django.shortcuts import render
 from django.urls import reverse
-from django.http import HttpRequest, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpRequest, HttpResponseRedirect
 from markdown2 import Markdown
 from pathlib import Path
 from . import util
@@ -52,7 +52,7 @@ def new_page(request: HttpRequest):
         desc = request.POST.get("description")
 
         if not title or not desc:
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/new")
 
         for entry in util.list_entries():
             if title.lower() == entry.lower():
@@ -73,7 +73,7 @@ def edit_page(request: HttpRequest, title: str):
         title_path = Path(f"entries/{title}.md")
 
         if not title_path.exists():
-            return HttpResponseNotFound("<h1>Page not found</h1>")
+            return render(request, "encyclopedia/entry.html")
 
         entry = title_path.read_text().splitlines()
         title = entry[0].strip("# ")
